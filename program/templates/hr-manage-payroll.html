@@ -1,0 +1,52 @@
+{%extends "hr-home.html"%}
+{%block content%}
+<style >
+    #control{
+        position: absolute;
+        margin-left: 250px;
+    }
+    #new{
+        position: absolute;
+        float: left;
+        width: 200px;
+        height: 100px;
+        margin-top: 20px;
+        margin-left: 700px;
+        background-color: #f1f1f1;
+    }
+    #plist_field{
+        width: 120px;
+        height: 200px;
+        text-align: center;
+    }
+    .pyrlctrl{
+        position: absolute;
+        margin-left: 230px;
+        width: 120px;
+        height: 30px;
+    }
+</style>
+<div id="man_pyrl">
+    <h2 style="margin-left: 450px;">Manage Payroll</h2>
+    <div>
+    <form id="control" method="POST" action="{{ url_for('manage_payroll', username=session['username']) }}">
+        {{ pyrl_ctrl.csrf_token }}
+        {{ pyrl_ctrl.list_pyrl.label(id='plist_label') }}:<br>{{ pyrl_ctrl.list_pyrl(id='plist_field') }}
+        <br>{{ pyrl_ctrl.new_pyrl(class='pyrlctrl', style="top: 50px")}}
+        <br>{{ pyrl_ctrl.open_pyrl(class='pyrlctrl', style="top: 100px")}}
+        <br>{{ pyrl_ctrl.delete_pyrl(class='pyrlctrl', style="top: 150px")}}
+    </form>
+    </div>
+
+{% if pyrl_ctrl.new_pyrl.data %}
+<div id="new">
+    <form method="POST" action="{{ url_for('new_payroll', username=session['username']) }}">
+            <label style="margin-left: 18px;">New payroll period:</label><br>
+            <input type="month" name="period" style="width: 160px; margin-left: 18px; margin-top: 10px" required>
+            <input type="submit" value="Create New" style="margin-top: 10px; width: 100px; margin-left: 50px">
+    </form>
+</div>
+{% endif %}
+
+</div>
+{%endblock%}

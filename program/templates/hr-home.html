@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Management System</title>
+</head>
+<style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 120px;
+  background-color: #f1f1f1;
+  margin-left: 5px;
+}
+
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+li a:hover {
+  background-color: #555;
+  color: white;
+}
+.container {
+  display:inline-block;
+}
+header {
+  position: absolute;
+  float:left;
+  width: 20%;
+}
+#navbar{
+  display:inline-block;
+  width: 100px;
+}
+</style>
+<body>
+  <header>
+    <h1>HR Portal</h1>
+    <div id="navbar" style="background-color: #97ACED">
+      <ul>
+      {% for item in nav.top %}
+      <li class="{{ 'active' if item.is_active else '' }}">
+        <a href="{{ item.url }}">{{ item.label }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+   </div>
+  </header>
+  {%block content%}
+  {%endblock%}
+</body>
+</html>

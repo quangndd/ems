@@ -1,0 +1,203 @@
+{%extends "hr-home.html"%}
+{%block content%}
+
+<style>
+
+    table, th, td {
+
+        margin-top: 0px;
+        margin-left: 170px;
+        border: 1px solid #ddd;
+        border-collapse: collapse;
+
+    }
+    table tbody:not(:first-child){
+        cursor: pointer;
+        height: 100px;      
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    table tbody:not(:first-child) :hover {background-color:#D5D5D5;}
+    table {
+        table-layout: auto;
+        width: 800px;
+    }
+    #dataform{
+        position: absolute;
+        display: inline-block;
+        float: left;
+        margin-left: 250px;
+        width: 750px;
+        background-color: #f1f1f1;
+    }
+    #viewform{
+        position: relative;
+        margin-top: 180px;
+        width: 100%;
+    }
+    .p1{
+        float: left;
+        position: absolute;
+        width: 330px;
+        height: 160px;
+        background-color: #f1f1f1;
+    }
+    .p2{
+        left: 300px;
+        position: absolute;
+        float: left;
+        width: 300px;
+        height: 160px;
+        background-color: #f1f1f1;
+    }
+    .datalabel{
+        position: absolute;
+        width: 100px;
+        margin-bottom: 20px;
+    }
+    .datafield{
+        margin-left: 100px;
+        width: 180px;
+        margin-bottom: 20px;
+    }
+    .disabled{
+        pointer-events:none;
+        margin-left: 100px;
+        width: 180px;
+        margin-bottom: 20px;
+        background-color: #f1f1f1;
+    }
+    #control{
+        position: absolute;
+        float: right;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+    }
+    .control{
+        width: 80px;
+        margin-bottom: 20px;
+    }
+    #search{
+        float: left;
+        margin-top: 0px;
+        margin-left: 250px;
+        margin-bottom: 10px;
+    }
+    .butsearch{
+        position: absolute;
+        top: 0px;
+        left: 480px;
+    }
+    #man_em{
+        position: relative;
+        top: 10px;
+    }
+    #msg{
+        position: absolute;
+        margin-left: 0px ;
+        color: red;
+    }
+</style>
+
+<div id="man_em">
+    <h2 style="margin-left: 450px;">Manage Employee</h2>
+</div>
+<div id="dataform">
+    <form method="POST">
+        <div class="p1">
+          {{ form_data.employeeid.label(class='datalabel') }} {{ form_data.employeeid(class='disabled', id="eid") }}
+          <br>{{ form_data.gender.label(class='datalabel') }} {{ form_data.gender(class='datafield', id="gender") }}
+          <br>{{ form_data.firstname.label(class='datalabel') }} {{ form_data.firstname(class='datafield', id="fname") }}
+          <br>{{ form_data.lastname.label(class='datalabel') }} {{ form_data.lastname(class='datafield', id="lname") }}
+      </div>
+      <div class="p2">
+          {{ form_data.department.label(class='datalabel') }} {{ form_data.department(class='datafield', id="dept") }}
+          <br>{{ form_data.title.label(class='datalabel') }} {{ form_data.title(class='datafield', id="title") }}
+          <br>{{ form_data.managerid.label(class='datalabel') }} {{ form_data.managerid(class='datafield', id="managerid") }}
+          <br>
+          <div id="msg">{{ msg }}</div>
+      </div>
+      <div id="control">
+          {{ form_data.csrf_token }}
+          {{ form_data.add(class='control', style='top:85px') }}<br>
+          {{ form_data.update(class='control', style='top:118px') }}<br> 
+          {{ form_data.delete(class='control',style='top:150px') }}<br>
+          <button onclick="fclear();" style= "width:80px">Clear</button>
+      </div>
+  </form>
+</div>
+
+<br>
+<div id="viewform">
+    <form id="search" method="POST" action=''>
+        {{ form_search.csrf_token }}
+        {{ form_search.sfirstname.label }} {{ form_search.sfirstname(id='slname') }}
+        {{ form_search.slastname.label }} {{ form_search.slastname(id='sfname') }}
+        {{ form_search.search(class='butsearch')}}
+    </form>
+    <br>
+    
+    <table id="table">
+        <tr>
+            <td><strong>ID</strong></td>
+            <td><strong>Gender</strong></td>
+            <td><strong>First Name</strong></td>
+            <td><strong>Last Name</strong></td>
+            <td><strong>Department</strong></td>
+            <td><strong>Title</strong></td>
+            <td><strong>Manager</strong></td>
+            <td><strong>ManagerID</strong></td>
+        </tr>
+        {% if employees %}
+        {% for employee in employees %}
+        <tr>
+            <tbody>
+                <td style="width: 10px">{{ employee['EmployeeID'] }}</td>
+                <td>{{ employee['Gender'] }}</td>
+                <td>{{ employee['FirstName'] }}</td>
+                <td>{{ employee['LastName'] }}</td>
+                <td>{{ employee['DeptName'] }}</td>
+                <td>{{ employee['TitleName'] }}</td>
+                <td>{{ employee['ManagerName'] }}</td>
+                <td style="text-align:center;">{{ employee['ManagerID'] }}</td>
+            </tbody>            
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+</div>
+
+
+<script>
+  var table = document.getElementById("table");
+  for(var i = 1; i < table.rows.length; i++)
+  {
+    table.rows[i].onclick = function()
+    {   
+        document.getElementById("eid").value = this.cells[0].innerHTML;
+        document.getElementById("gender").value = this.cells[1].innerHTML;
+        document.getElementById("fname").value = this.cells[2].innerHTML;
+        document.getElementById("sfname").value = this.cells[2].innerHTML;
+        document.getElementById("lname").value = this.cells[3].innerHTML;
+        document.getElementById("slname").value = this.cells[3].innerHTML;
+        document.getElementById("dept").value = this.cells[4].innerHTML;
+        document.getElementById("title").value = this.cells[5].innerHTML;
+        document.getElementById("managerid").value = this.cells[7].innerHTML;
+    }
+}
+
+    
+function fclear() {
+document.getElementById("eid").value='';
+document.getElementById("gender").value='';
+document.getElementById("fname").value='';
+document.getElementById("lname").value='';
+document.getElementById("dept").value='';
+document.getElementById("title").value='';
+document.getElementById("managerid").value='';
+}
+
+</script>
+{%endblock%}

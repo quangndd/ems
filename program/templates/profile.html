@@ -1,0 +1,110 @@
+{%extends home_user %}
+{%block content%}
+
+
+<style>
+    .view {
+        position: absolute;
+        margin-left: 200px;
+        width: 800px;
+        background-color: #f1f1f1;
+    }
+    #profile{
+        float: left;
+        width: 40%;
+        background-color: #f1f1f1;
+    }
+    .pflabel{
+        color: #000;
+        float:left;
+        width:200px;
+        margin-right: 50px;
+        margin-bottom: 7px;
+        text-decoration: none;
+        background-color: #f1f1f1;
+    } 
+    #dataform{
+        display: inline-block;
+        float:left;
+        width: 30%;
+    }
+    .datalabel{
+        float:left;
+        width:80px;
+        margin-top: 10px;
+        margin-right: 20px;
+    }
+    .datafield{
+        float: left;
+        margin-top: 10px;
+        margin-right: 50px;
+        width: 200px;
+    }
+    .disabled{
+        pointer-events:none;
+        float: left;
+        margin-top: 10px;
+        width: 200px;
+        margin-right: 20px;
+        background-color: #f1f1f1;
+    }
+    .control{
+        margin-top: 20px;
+        margin-left: 50px;
+        float:left;
+        display: inline-block;
+    }
+    .editbutton{
+        float:left;
+        display: inline-block;
+        margin-top: 180px;
+        margin-bottom: 5px;
+    }
+    #msg{
+        margin-top: 10px;
+        margin-left: 75px;
+        float:left;
+        display: inline-block;
+		color: red;
+    }  
+
+</style>
+<h1 style="text-align: center;">Profile</h1>
+<div class="view">
+    <div id=profile>
+        <ul class="pfview">    
+         <li class="pflabel"><strong>Employee ID:</strong><br>{{ profile["EmployeeID"] }}</li>
+         <li class="pflabel"><strong>Gender:</strong><br>{{ profile["Gender"] }}</li>
+         <li class="pflabel"><strong>First Name:</strong><br>{{ profile["FirstName"] }}</li>
+         <li class="pflabel"><strong>Last Name:</strong><br>{{ profile["LastName"] }}</li>
+         <li class="pflabel"><strong>Department:</strong><br>{{ profile["DeptName"] }}</li>
+         <li class="pflabel"><strong>Title:</strong><br>{{ profile["TitleName"] }}</li>
+         <li class="pflabel"><strong>Manager:</strong><br>{{ profile["ManagerName"] }}</li>
+         <li class="pflabel"><strong>ManagerID:</strong><br>{{ profile["ManagerID"] }}</li>
+     </ul>
+ </div>
+ <form class="editbutton" action="{{ url_for('profile', username=session['username'], accounttype=session['accounttype']) }}", method="POST">
+    <input class="editbutton" type="submit" value="Edit Profile" name="edit">
+</form> 
+{% if session["update_form"] %}
+<div id="dataform">
+    <form method="POST" action="{{ url_for('profile_update', username=session['username'], accounttype=session['accounttype']) }}">
+        <div class="p1">
+          <label class='datalabel'>ID</label><input type="text" class='disabled', name="eid" value="{{ profile['EmployeeID'] }}">
+          <br><label class='datalabel'>Gender</label>
+          <select class='datafield', name="gender" value="{{ profile['Gender'] }}">
+            <option value="m" {%if profile["Gender"] == 'm'  %} selected {%endif%} >Male</option>
+            <option value="f" {%if profile["Gender"] == 'f'  %} selected {%endif%} >Female</option>
+            </select>
+          <br><label class='datalabel'>First Name</label><input type="text" class='datafield', name="fname" value="{{ profile['FirstName'] }}">
+          <br><label class='datalabel'>Last Name</label><input type="text" class='datafield', name="lname" value="{{ profile['LastName'] }}">
+      </div>
+      <input type="submit" value="Update Profile" class='control'>
+      <br><br>
+      <p id='msg'>{{ msg }}</p>
+  </form>
+</div>
+{% endif %}
+</div>
+
+{%endblock%}

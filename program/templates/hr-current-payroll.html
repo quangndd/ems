@@ -1,0 +1,188 @@
+{%extends "hr-home.html"%}
+{%block content%}
+
+<style>
+    table, th, td {
+        margin-top: 0px;
+        margin-left: 140px;
+        border: 1px solid #ddd;
+        border-collapse: collapse;
+        overflow: hidden;
+
+    }
+    table tbody:not(:first-child){
+        cursor: pointer;
+        height: 100px;
+        overflow: hidden;      
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    table tbody:not(:first-child) :hover {background-color:#D5D5D5;}
+    table {
+        table-layout: auto;
+        width: 900px;
+        overflow:hidden;
+        word-wrap:break-word;
+    }
+    #dataform{
+        position: absolute;
+        display: inline-block;
+        float: left;
+        width: 750px;
+        margin-left: 250px;
+        background-color: #f1f1f1;
+    }
+    #viewform{
+        position: relative;
+        margin-top: 200px;
+        width: 100%;
+    }
+    .p1{
+        float: left;
+        position: absolute;
+        width: 330px;
+        height: 180px;
+        background-color: #f1f1f1;
+    }
+    .p2{
+        left: 300px;
+        position: absolute;
+        float: left;
+        width: 300px;
+        height: 180px;
+        background-color: #f1f1f1;
+    }
+    .datalabel{
+        position: absolute;
+        width: 100px;
+        margin-top: 7px;
+        margin-bottom: 7px;
+    }
+    .datafield{
+        margin-left: 100px;
+        margin-top: 7px;
+        width: 180px;
+        margin-bottom: 7px;
+    }
+    .disabled{
+        pointer-events:none;
+        margin-left: 100px;
+        margin-top: 7px;
+        width: 180px;
+        margin-bottom: 7px;
+        background-color: #f1f1f1;
+    }
+    #control{
+        position: absolute;
+        float: right;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+    }
+    .control{
+        width: 120px;
+        margin-top: 3px;
+        margin-left: 100px;
+        margin-bottom: 20px;
+    }
+    #man_em{
+        position: relative;
+        top: 10px;
+    }
+    .err{
+        display: inline-block;
+        position: absolute;
+        margin-top: 190px;
+        margin-left: 23 0px;
+        width: 300px;
+        color: #FF0000;
+    }
+    #download{
+        width: 80px;
+        margin-top: 3px;
+        margin-left: 350px;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div id="man_pry">
+    <h2 style="margin-left: 400px;">Payroll {{ session['pyrl_id_str'] }}</h2>
+    <div id="dataform">
+        <form method="POST" action="{{ url_for('open_selected_payroll', username=session['username'], pyrl_id=session['pyrl_id']) }}">
+            <div class="p1">
+              {{ form_data.employeeid.label(class='datalabel') }} {{ form_data.employeeid(class='disabled', id="eid") }}
+              <br>{{ form_data.fullname.label(class='datalabel') }} {{ form_data.fullname(class='disabled', id="fname") }}
+              <br>{{ form_data.basesalary.label(class='datalabel') }} {{ form_data.basesalary(class='datafield', id="basesalary") }}
+              <br>{{ form_data.overtime.label(class='datalabel') }} {{ form_data.overtime(class='datafield', id="overtime") }}
+              {{ form_data.update_pyrl(class='control') }}
+          </div>
+          <div class="p2">
+            {{ form_data.allowance.label(class='datalabel') }} {{ form_data.allowance(class='datafield', id="allowance") }}  
+            <br>{{ form_data.prjbonus.label(class='datalabel') }} {{ form_data.prjbonus(class='datafield', id="prjbonus") }}
+            <br>{{ form_data.advance.label(class='datalabel') }} {{ form_data.advance(class='datafield', id="advance") }}
+            <br>{{ form_data.ul.label(class='datalabel') }} {{ form_data.ul(class='datafield', id="ul") }}
+            {{ form_data.csrf_token }}
+            {{ form_data.update_id(class='control') }} {{ form_data.download(id='download') }}
+        </div>
+        <div class='err'>{{ error }}</div>
+    </form>
+    </div>
+</div>
+<br>
+<div id="viewform">
+    <table id="table">
+        <tr>
+            <td><strong>ID</strong></td>
+            <td><strong>Full Name</strong></td>
+            <td><strong>Department</strong></td>
+            <td><strong>Title</strong></td>
+            <td><strong>Base Salary</strong></td>
+            <td><strong>Over Time</strong></td>
+            <td><strong>Allowance</strong></td>
+            <td><strong>Project Bonus</strong></td>
+            <td><strong>Advance</strong></td>
+            <td><strong>Unpaid Leave</strong></td>
+            <td><strong>Total</strong></td>
+        </tr>
+        {% if epyrls %}
+        {% for epyrl in epyrls %}
+        <tr>
+        </tbody>
+            <td>{{ epyrl['EmployeeID'] }}</td>
+            <td>{{ epyrl['FullName'] }}</td>
+            <td>{{ epyrl['DeptName'] }}</td>
+            <td>{{ epyrl['TitleName'] }}</td>
+            <td>{{ epyrl['BaseSalary'] }}</td>
+            <td>{{ epyrl['OverTime'] }}</td>
+            <td>{{ epyrl['Allowance'] }}</td>
+            <td>{{ epyrl['ProjectBonus'] }}</td>
+            <td>{{ epyrl['Advance'] }}</td>
+            <td>{{ epyrl['UnpaidLeave'] }}</td>
+            <td>{{ epyrl['Total'] }}</td>
+            </tbody>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+</div>
+
+
+<script>
+  var table = document.getElementById("table");
+  for(var i = 1; i < table.rows.length; i++)
+  {
+    table.rows[i].onclick = function()
+    {   
+        document.getElementById("eid").value = this.cells[0].innerHTML;
+        document.getElementById("fname").value = this.cells[1].innerHTML;
+        document.getElementById("basesalary").value = this.cells[4].innerHTML;
+        document.getElementById("overtime").value = this.cells[5].innerHTML;
+        document.getElementById("allowance").value = this.cells[6].innerHTML;
+        document.getElementById("prjbonus").value = this.cells[7].innerHTML;
+        document.getElementById("advance").value = this.cells[8].innerHTML;
+        document.getElementById("ul").value = this.cells[9].innerHTML;
+    }
+}
+</script>
+{%endblock%}
