@@ -1,0 +1,6 @@
+*.pyo
+*.pyc
+__pycache__
+config/*
+instance/*
+temp/*
